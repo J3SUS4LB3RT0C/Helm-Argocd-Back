@@ -7,26 +7,20 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: backend
+      app: {{ .Chart.Name }}
   template:
     metadata:
       labels:
-        app: backend
+        app: {{ .Chart.Name }}
     spec:
       containers:
-        - name: backend
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+
           ports:
             - containerPort: {{ .Values.containerPort }}
           env:
             - name: DB_HOST
-              value: {{ .Values.env.DB_HOST }}
-            - name: DB_PORT
-              value: "{{ .Values.env.DB_PORT }}"
-            - name: DB_NAME
-              value: {{ .Values.env.DB_NAME }}
-            - name: DB_USER
-              value: {{ .Values.env.DB_USER }}
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -47,7 +41,6 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   selector:
-    app: backend
   ports:
     - protocol: TCP
       port: {{ .Values.service.port }}
